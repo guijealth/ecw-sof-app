@@ -7,6 +7,7 @@
 (def struc
   [[:port {:env "PORT", :of-type :cfg/integer}]
    [:ecw
+    [:iss {:env "ECW_ISS", :of-type :cfg/url}]
     [:client
      [:id {:env "ECW_CLIENT_ID", :of-type :cfg/string}]
      [:secret {:env "ECW_CLIENT_SECRET", :of-type :cfg/string}]]]])

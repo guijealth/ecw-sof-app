@@ -1,4 +1,7 @@
-(ns ecw-sof-app.routes)
+(ns ecw-sof-app.routes
+  (:require
+   [lambdaisland.uri :refer [uri]]
+   [ecw-sof-app.config :refer [config]]))
 
 (defn home [_req]
   {:status 200

@@ -1,0 +1,8 @@
+### cabability statement
+GET {{$dotenv ECW_ISS}}/metadata?_format=json
+
+# <-- ./capability-statement.http
+
+### wk-smart-config
+
+GET {{$dotenv ECW_ISS}}/.well-known/smart-configuration
