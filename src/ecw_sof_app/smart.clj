@@ -82,6 +82,9 @@
         :code_challenge_method "S256"
         :code_challenge (code-challenge code-verifier)}))))
 
+(defn iss [id]
+  (get-in @state-storage [id :iss]))
+
 (defn access-token [id code]
   (let [{:keys [code-verifier iss]} (get @state-storage id)]
     (-> {:method :post
@@ -94,7 +97,7 @@
                        "client_id" (get-in @config [:ecw :client :id])}
          :as :json}
         request
-        (get-in [:body :access_token]))))
+        :body)))
 
 (comment
 

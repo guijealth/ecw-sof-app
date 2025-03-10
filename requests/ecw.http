@@ -6,3 +6,10 @@ GET {{$dotenv ECW_ISS}}/metadata?_format=json
 ### wk-smart-config
 
 GET {{$dotenv ECW_ISS}}/.well-known/smart-configuration
+
+###
+
+GET {{$dotenv ECW_ISS}}/Patient
+    ?_id=Lt2IFR5Ah76n4d8TFP5gBKg4ZI12sNPdIoaT09cR4kc
+Authorization: {{$dotenv AUTH}}
+Accept: application/json
