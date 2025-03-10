@@ -20,6 +20,8 @@
    "launch/patient"
    "offline_access"])
 
+(def state-storage (atom {}))
+
 (defn wk-smart-config [iss]
   (-> {:method :get
        :url (str iss "/.well-known/smart-configuration")
@@ -45,16 +47,17 @@
             (-> (wk-smart-config iss)
                 :authorization_endpoint
                 (str "?" (map->query-string params))))]
-    (let [code-verifier (gen-code-verifier)]
+    (let [code-verifier (gen-code-verifier)
+          state (str (random-uuid))]
+      (swap! state-storage assoc state {:code-verifier code-verifier, :iss iss})
       (auth-challenge
        {:response_type "code"
         :client_id (get-in @config [:ecw :client :id])
         :redirect_uri (get-in @config [:ecw :client :redirect-url])
         :launch launch
         :scope (str/join " " (concat default-ehr-scopes scopes))
-        :state (str (random-uuid))
+        :state state
         :aud iss
-        #_#_:code_verifier code-verifier
         :code_challenge_method "S256"
         :code_challenge (code-challenge code-verifier)}))))
 
@@ -64,17 +67,34 @@
                 wk-smart-config
                 :authorization_endpoint
                 (str "?" (map->query-string params))))]
-    (let [code-verifier (gen-code-verifier)]
+    (let [iss (get-in @config [:ecw :iss])
+          code-verifier (gen-code-verifier)
+          state (str (random-uuid))]
+      (swap! state-storage assoc state {:code-verifier code-verifier, :iss iss})
       (auth-challenge
        {:response_type "code"
         :client_id (get-in @config [:ecw :client :id])
         :redirect_uri (get-in @config [:ecw :client :redirect-url])
         :scope (str/join " " (concat default-standalone-scopes scopes))
-        :state (str (random-uuid))
-        :aud (get-in @config [:ecw :iss])
+        :state state
+        :aud iss
         #_#_:code_verifier code-verifier
         :code_challenge_method "S256"
         :code_challenge (code-challenge code-verifier)}))))
+
+(defn access-token [id code]
+  (let [{:keys [code-verifier iss]} (get @state-storage id)]
+    (-> {:method :post
+         :url (:token_endpoint (wk-smart-config iss))
+         :header {"Content-Type" "application/x-www-form-urlencoded"}
+         :form-params {"grant_type" "authorization_code"
+                       "code" code
+                       "redirect_uri" (get-in @config [:ecw :client :redirect-url])
+                       "code_verifier" code-verifier
+                       "client_id" (get-in @config [:ecw :client :id])}
+         :as :json}
+        request
+        (get-in [:body :access_token]))))
 
 (comment
 

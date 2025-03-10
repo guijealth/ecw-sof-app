@@ -13,10 +13,11 @@
    :headers {"Location" (smart/standalone-launch ["patient/Patient.read"])}})
 
 (defn callback [req]
-  (let [code (get-in req [:query-params "code"])]
+  (let [code (get-in req [:query-params "code"])
+        id (get-in req [:query-params "state"])]
     {:status 200
      :headers {"Content-Type" "text/html"}
-     :body code}))
+     :body (smart/access-token id code)}))
 
 (def routes
   [["/ehr"
