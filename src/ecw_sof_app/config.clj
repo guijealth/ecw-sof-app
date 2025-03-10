@@ -5,7 +5,8 @@
    [config.core :as cfg]))
 
 (def struc
-  [[:ecw
+  [[:port {:env "PORT", :of-type :cfg/integer}]
+   [:ecw
     [:client
      [:id {:env "ECW_CLIENT_ID", :of-type :cfg/string}]
      [:secret {:env "ECW_CLIENT_SECRET", :of-type :cfg/string}]]]])
