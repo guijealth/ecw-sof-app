@@ -10,7 +10,8 @@
     [:iss {:env "ECW_ISS", :of-type :cfg/url}]
     [:client
      [:id {:env "ECW_CLIENT_ID", :of-type :cfg/string}]
-     [:secret {:env "ECW_CLIENT_SECRET", :of-type :cfg/string}]]]])
+     [:secret {:env "ECW_CLIENT_SECRET", :of-type :cfg/string}]
+     [:redirect-url {:env "ECW_REDIRECT_URL", :of-type :cfg/url}]]]])
 
 (def config
   (delay

@@ -1,7 +1,6 @@
 (ns ecw-sof-app.routes
   (:require
-   [lambdaisland.uri :refer [uri]]
-   [ecw-sof-app.config :refer [config]]))
+   [ecw-sof-app.smart :as smart]))
 
 (defn home [_req]
   {:status 200
@@ -9,10 +8,15 @@
    :body "hi mom!"})
 
 (defn launch [_req]
+  {:status 302
+   :headers {"Location" (smart/standalone-launch ["patient/Patient.read"])}})
+
+(defn callback [_req]
   {:status 200
    :headers {"Content-Type" "text/html"}
-   :body "launch!"})
+   :body "callback!"})
 
 (def routes
   [["/" {:get home}]
-   ["/launch" {:get launch}]])
+   ["/launch" {:get launch}]
+   ["/callback" {:get callback}]])
