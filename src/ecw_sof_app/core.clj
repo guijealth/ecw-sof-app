@@ -40,14 +40,11 @@
 
 (defn stop! []
   (log/info "stopping server...")
-  (.stop @server)
-  (log/info "server stopped!"))
+  (.stop @server))
 
 (defn start! []
-  (let [cfg (select-keys @config [:port])]
-    (log/info "starting server..." cfg)
-    (reset! server (run-jetty #'app {:port (:port cfg), :join? false}))
-    (log/info "server started!" cfg)))
+  (log/info "starting server...")
+  (reset! server (run-jetty #'app {:port (:port @config), :join? false})))
 
 (defn -main [& _]
   (start!))
